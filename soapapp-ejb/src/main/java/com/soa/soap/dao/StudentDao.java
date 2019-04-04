@@ -1,6 +1,7 @@
 package com.soa.soap.dao;
 
 import com.soa.soap.entity.StudentEntity;
+import com.soa.soap.enums.Gender;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -62,7 +63,7 @@ public class StudentDao {
         this.currentTransaction = currentTransaction;
     }
 
-    public void persist(StudentEntity entity) {
+    public void save(StudentEntity entity) {
         getCurrentSession().save(entity);
     }
 
@@ -74,7 +75,7 @@ public class StudentDao {
         getCurrentSession().delete(entity);
     }
 
-    public StudentEntity findById(String id) {
+    public StudentEntity findById(Integer id) {
         return (StudentEntity) getCurrentSession().get(StudentEntity.class, id);
     }
 
@@ -83,10 +84,28 @@ public class StudentDao {
         return (List<StudentEntity>) getCurrentSession().createQuery("from StudentEntity").list();
     }
 
+    public List<StudentEntity> findByFirstName(String firstName) {
+        return (List<StudentEntity>) getCurrentSession().createQuery("from StudentEntity where firstName like " + firstName).list();
+    }
+
+    public List<StudentEntity> findBylastName(String lastName) {
+        return (List<StudentEntity>) getCurrentSession().createQuery("from StudentEntity where lastName like " + lastName).list();
+    }
+
+    public List<StudentEntity> findByEmail(String email) {
+        return (List<StudentEntity>) getCurrentSession().createQuery("from StudentEntity where email like " + email).list();
+    }
+
+    public List<StudentEntity> findByGender(Gender gender) {
+        return (List<StudentEntity>) getCurrentSession().createQuery("from StudentEntity where gender is " + gender).list();
+    }
+
     public void deleteAll() {
         List<StudentEntity> entityList = findAll();
         for (StudentEntity entity : entityList) {
             delete(entity);
         }
     }
+
+
 }

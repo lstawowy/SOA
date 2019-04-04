@@ -26,12 +26,14 @@ public class StudentEntity {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    private byte[] avatar;
+    private String avatar;
 
     @Id
     @XmlTransient
     @GeneratedValue(strategy = GenerationType.AUTO)
-    public int getId() { return id;  }
+    public int getId() {
+        return id;
+    }
 
     public void setId(int id) {
         this.id = id;
@@ -74,11 +76,11 @@ public class StudentEntity {
     }
 
     @XmlElement(name = "avatar")
-    public byte[] getAvatar() {
+    public String getAvatar() {
         return avatar;
     }
 
-    public void setAvatar(byte[] avatar) {
+    public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
 }

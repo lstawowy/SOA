@@ -53,7 +53,13 @@
             <artifactId>soapapp-ejb</artifactId>
             <type>ejb</type>
         </dependency>
-        
+
+        <dependency>
+            <groupId>com.soa.soap</groupId>
+            <artifactId>soap-connector</artifactId>
+            <type>ejb</type>
+        </dependency>
+
     </dependencies>
 
     <build>

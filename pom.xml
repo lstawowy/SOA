@@ -34,6 +34,7 @@
     </licenses>
     <modules>
         <module>soapapp-ejb</module>
+        <module>soap-connector</module>
         <module>soapapp-web</module>
         <module>soapapp-ear</module>
     </modules>
@@ -76,6 +77,13 @@
                 <version>${project.version}</version>
                 <type>ejb</type>
             </dependency>
+
+            <dependency>
+                <groupId>com.soa.soap</groupId>
+                <artifactId>soap-connector</artifactId>
+                <version>${project.version}</version>
+                <type>ejb</type>
+            </dependency>
             
             <!-- Define the version of the WAR so that we don't need to repeat 
                 ourselves in every module -->
@@ -110,7 +118,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
 
@@ -131,6 +138,25 @@
                         <skip>true</skip>
                     </configuration>
                 </plugin>
+
+                <plugin>
+                    <groupId>org.jboss.ws.plugins</groupId>
+                    <artifactId>jaxws-tools-maven-plugin</artifactId>
+                    <version>1.2.0.Final</version>
+                    <configuration>
+                        <wsdls>
+                            <wsdl>${basedir}/test.wsdl</wsdl>
+                        </wsdls>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>wsconsume</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
             </plugins>
         </pluginManagement>
     </build>
