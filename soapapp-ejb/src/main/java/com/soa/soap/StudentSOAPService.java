@@ -140,8 +140,16 @@ public class StudentSOAPService {
         dao.openCurrentSessionwithTransaction();
         StudentEntity entity = dao.findById(id);
         Base64Converter.convertBase64ToImage(entity.getAvatar(), filePath);
-        dao.update(entity);
         dao.closeCurrentSessionwithTransaction();
+    }
+
+    @WebMethod
+    public String downloadStudentAvatarAsBase64(@NotNull @WebParam(name = "id") Integer id) throws IOException {
+        dao.openCurrentSessionwithTransaction();
+        StudentEntity entity = dao.findById(id);
+        String encodedImage = entity.getAvatar();
+        dao.closeCurrentSessionwithTransaction();
+        return encodedImage;
     }
 
 }
