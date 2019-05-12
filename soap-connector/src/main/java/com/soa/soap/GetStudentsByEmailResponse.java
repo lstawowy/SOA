@@ -1,0 +1,121 @@
+
+package com.soa.soap;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+ * <p>Java class for getStudentsByEmailResponse complex type.
+ *
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ *
+ * <pre>
+ * &lt;complexType name="getStudentsByEmailResponse"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="students" minOccurs="0"&gt;
+ *           &lt;complexType&gt;
+ *             &lt;complexContent&gt;
+ *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *                 &lt;sequence&gt;
+ *                   &lt;element name="student" type="{http://soap.soa.com/}studentEntity" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *                 &lt;/sequence&gt;
+ *               &lt;/restriction&gt;
+ *             &lt;/complexContent&gt;
+ *           &lt;/complexType&gt;
+ *         &lt;/element&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "getStudentsByEmailResponse", propOrder = {
+        "students"
+})
+public class GetStudentsByEmailResponse {
+
+    protected GetStudentsByEmailResponse.Students students;
+
+    /**
+     * Gets the value of the students property.
+     *
+     * @return possible object is
+     * {@link GetStudentsByEmailResponse.Students }
+     */
+    public GetStudentsByEmailResponse.Students getStudents() {
+        return students;
+    }
+
+    /**
+     * Sets the value of the students property.
+     *
+     * @param value allowed object is
+     *              {@link GetStudentsByEmailResponse.Students }
+     */
+    public void setStudents(GetStudentsByEmailResponse.Students value) {
+        this.students = value;
+    }
+
+
+    /**
+     * <p>Java class for anonymous complex type.
+     *
+     * <p>The following schema fragment specifies the expected content contained within this class.
+     *
+     * <pre>
+     * &lt;complexType&gt;
+     *   &lt;complexContent&gt;
+     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+     *       &lt;sequence&gt;
+     *         &lt;element name="student" type="{http://soap.soa.com/}studentEntity" maxOccurs="unbounded" minOccurs="0"/&gt;
+     *       &lt;/sequence&gt;
+     *     &lt;/restriction&gt;
+     *   &lt;/complexContent&gt;
+     * &lt;/complexType&gt;
+     * </pre>
+     */
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "", propOrder = {
+            "student"
+    })
+    public static class Students {
+
+        protected List<StudentEntity> student;
+
+        /**
+         * Gets the value of the student property.
+         *
+         * <p>
+         * This accessor method returns a reference to the live list,
+         * not a snapshot. Therefore any modification you make to the
+         * returned list will be present inside the JAXB object.
+         * This is why there is not a <CODE>set</CODE> method for the student property.
+         *
+         * <p>
+         * For example, to add a new item, do as follows:
+         * <pre>
+         *    getStudent().add(newItem);
+         * </pre>
+         *
+         *
+         * <p>
+         * Objects of the following type(s) are allowed in the list
+         * {@link StudentEntity }
+         */
+        public List<StudentEntity> getStudent() {
+            if (student == null) {
+                student = new ArrayList<StudentEntity>();
+            }
+            return this.student;
+        }
+
+    }
+
+}

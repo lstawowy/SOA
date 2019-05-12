@@ -41,22 +41,52 @@
 
     <dependencies>
 
-        <!-- Depend on the ejb module and war so that we can package them -->
         <dependency>
             <groupId>com.soa.soap</groupId>
-            <artifactId>soapapp-web</artifactId>
+            <artifactId>rest-api</artifactId>
             <type>war</type>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.soa.soap</groupId>
-            <artifactId>soapapp-ejb</artifactId>
+            <artifactId>rest-connector</artifactId>
             <type>ejb</type>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.soa.soap</groupId>
+            <artifactId>soap-api</artifactId>
+            <type>ejb</type>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.soa.soap</groupId>
             <artifactId>soap-connector</artifactId>
+            <type>ejb</type>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.soa.soap</groupId>
+            <artifactId>soapapp-model</artifactId>
+            <type>ejb</type>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.soa.soap</groupId>
+            <artifactId>soapapp-jpa</artifactId>
+            <version>${project.version}</version>
+            <type>ejb</type>
+        </dependency>
+
+        <dependency>
+            <groupId>com.soa.soap</groupId>
+            <artifactId>soapapp-dao</artifactId>
+            <version>${project.version}</version>
             <type>ejb</type>
         </dependency>
 
@@ -86,6 +116,8 @@
             <plugin>
                 <groupId>org.wildfly.plugins</groupId>
                 <artifactId>wildfly-maven-plugin</artifactId>
+                <version>${version.wildfly.maven.plugin}</version>
+                <inherited>true</inherited>
                 <configuration>
                     <filename>${project.artifactId}.ear</filename>
                     <skip>false</skip>

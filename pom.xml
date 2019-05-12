@@ -18,6 +18,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <name>soapapp</name>
+    <dependencies>
+    </dependencies>
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.soa.soap</groupId>
     <artifactId>soapapp</artifactId>
@@ -33,9 +35,15 @@
         </license>
     </licenses>
     <modules>
-        <module>soapapp-ejb</module>
+        <module>soapapp-model</module>
+        <module>soapapp-dao</module>
+        <module>soapapp-jpa</module>
+
+        <module>soap-api</module>
         <module>soap-connector</module>
-        <module>soapapp-web</module>
+        <module>rest-api</module>
+        <module>rest-connector</module>
+
         <module>soapapp-ear</module>
     </modules>
 
@@ -47,8 +55,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- JBoss dependency versions -->
-        
-        <version.wildfly.maven.plugin>1.0.2.Final</version.wildfly.maven.plugin>
+
+        <version.wildfly.maven.plugin>2.0.1.Final</version.wildfly.maven.plugin>
 
         <!-- Define the version of the JBoss BOMs we want to import to specify tested stacks. -->
         <version.jboss.bom>8.2.1.Final</version.jboss.bom>
@@ -73,7 +81,22 @@
                 to repeat ourselves in every module -->
             <dependency>
                 <groupId>com.soa.soap</groupId>
-                <artifactId>soapapp-ejb</artifactId>
+                <artifactId>rest-api</artifactId>
+                <version>${project.version}</version>
+                <type>war</type>
+                <scope>compile</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.soa.soap</groupId>
+                <artifactId>rest-connector</artifactId>
+                <version>${project.version}</version>
+                <type>ejb</type>
+            </dependency>
+
+            <dependency>
+                <groupId>com.soa.soap</groupId>
+                <artifactId>soap-api</artifactId>
                 <version>${project.version}</version>
                 <type>ejb</type>
             </dependency>
@@ -84,15 +107,33 @@
                 <version>${project.version}</version>
                 <type>ejb</type>
             </dependency>
-            
-            <!-- Define the version of the WAR so that we don't need to repeat 
-                ourselves in every module -->
+
             <dependency>
                 <groupId>com.soa.soap</groupId>
-                <artifactId>soapapp-web</artifactId>
+                <artifactId>soapapp-ear</artifactId>
                 <version>${project.version}</version>
-                <type>war</type>
-                <scope>compile</scope>
+                <type>ejb</type>
+            </dependency>
+
+            <dependency>
+                <groupId>com.soa.soap</groupId>
+                <artifactId>soapapp-model</artifactId>
+                <version>${project.version}</version>
+                <type>ejb</type>
+            </dependency>
+
+            <dependency>
+                <groupId>com.soa.soap</groupId>
+                <artifactId>soapapp-jpa</artifactId>
+                <version>${project.version}</version>
+                <type>ejb</type>
+            </dependency>
+
+            <dependency>
+                <groupId>com.soa.soap</groupId>
+                <artifactId>soapapp-dao</artifactId>
+                <version>${project.version}</version>
+                <type>ejb</type>
             </dependency>
 
             <!-- JBoss distributes a complete set of Java EE 7 APIs including
@@ -159,6 +200,16 @@
 
             </plugins>
         </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 
 </project>
