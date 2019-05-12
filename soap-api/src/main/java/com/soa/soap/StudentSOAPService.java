@@ -2,8 +2,8 @@ package com.soa.soap;
 
 import com.soa.soap.converter.Base64Converter;
 import com.soa.soap.dao.StudentsDao;
+import com.soa.soap.enums.Gender;
 import entity.StudentEntity;
-import enums.Gender;
 import org.jboss.ws.api.annotation.WebContext;
 
 import javax.ejb.Stateless;
@@ -35,48 +35,48 @@ public class StudentSOAPService {
 
     @WebMethod
     public void addStudent(@NotNull @WebParam(name = "student") StudentEntity student) {
-        dao.create(student);
+        dao.save(student);
     }
 
     @WebMethod
     @WebResult(name = "student")
     @XmlElementWrapper(name = "students")
     public List<StudentEntity> getAllStudents() {
-        return dao.list(0, 1000);
+        return dao.findAll();
     }
 
     @WebMethod
     @WebResult(name = "student")
     public StudentEntity getStudentById(@NotNull @WebParam(name = "id") Integer id) {
-        return dao.get(id);
+        return (StudentEntity) dao.findById(id);
     }
 
     @WebMethod
     @WebResult(name = "student")
     @XmlElementWrapper(name = "students")
     public List<StudentEntity> getStudentsByFirstName(@NotNull @WebParam(name = "firstName") String firstName) {
-        return dao.list(0, 1000);
+        return dao.findByFirstName(firstName);
     }
 
     @WebMethod
     @WebResult(name = "student")
     @XmlElementWrapper(name = "students")
     public List<StudentEntity> getStudentsByLastName(@NotNull @WebParam(name = "lastName") String lastName) {
-        return dao.list(0, 1000);
+        return dao.findByLastName(lastName);
     }
 
     @WebMethod
     @WebResult(name = "student")
     @XmlElementWrapper(name = "students")
     public List<StudentEntity> getStudentsByEmail(@NotNull @WebParam(name = "email") String email) {
-        return dao.list(0, 1000);
+        return dao.findByEmail(email);
     }
 
     @WebMethod
     @WebResult(name = "student")
     @XmlElementWrapper(name = "students")
     public List<StudentEntity> getStudentsByGender(@NotNull @WebParam(name = "gender") Gender gender) {
-        return dao.list(0, 1000);
+        return dao.findByGender(gender);
     }
 
     @WebMethod
@@ -97,7 +97,7 @@ public class StudentSOAPService {
     @WebMethod
     public void uploadBase64ImageToStudent(@NotNull @WebParam(name = "id") Integer id,
                                            @NotNull @WebParam(name = "filePath") String filePath) throws IOException {
-        StudentEntity entity = dao.get(id);
+        StudentEntity entity = (StudentEntity) dao.findById(id);
         entity.setAvatar(Base64Converter.convertToBase64(filePath));
         dao.update(entity);
     }
@@ -105,13 +105,13 @@ public class StudentSOAPService {
     @WebMethod
     public void downloadStudentAvatar(@NotNull @WebParam(name = "id") Integer id,
                                       @NotNull @WebParam(name = "filePath") String filePath) throws IOException {
-        StudentEntity entity = dao.get(id);
+        StudentEntity entity = (StudentEntity) dao.findById(id);
         Base64Converter.convertBase64ToImage(entity.getAvatar(), filePath);
     }
 
     @WebMethod
     public String downloadStudentAvatarAsBase64(@NotNull @WebParam(name = "id") Integer id) throws IOException {
-        StudentEntity entity = dao.get(id);
+        StudentEntity entity = (StudentEntity) dao.findById(id);
         return entity.getAvatar();
     }
 

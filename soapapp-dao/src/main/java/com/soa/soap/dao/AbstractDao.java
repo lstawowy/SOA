@@ -1,111 +1,98 @@
 package com.soa.soap.dao;
 
-import org.jboss.logging.Logger;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
 
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.persistence.*;
-import javax.persistence.criteria.CriteriaQuery;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
-public abstract class AbstractDao {
+public abstract class AbstractDao<T> {
 
-    @PersistenceContext(unitName = "primary", type = PersistenceContextType.EXTENDED)
-    protected EntityManager entityManager;
+    private Session currentSession;
 
-    public <T> void create(T object) {
-        getLogger().info("create - invoked " + object);
-        entityManager.persist(object);
+    private Transaction currentTransaction;
+
+    public Session openCurrentSession() {
+        currentSession = getSessionFactory().openSession();
+        return currentSession;
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public <T> void createNewTransaction(T object) {
-        getLogger().info("createNewTransaction - invoked " + object);
-        entityManager.persist(object);
+    public Session openCurrentSessionwithTransaction() {
+        currentSession = getSessionFactory().openSession();
+        currentTransaction = currentSession.beginTransaction();
+        return currentSession;
     }
 
-    public <T> boolean update(T object) {
-        getLogger().info("update - invoked " + object);
-        entityManager.merge(object);
-        getLogger().info("update - record udapted");
-        return true;
+    public void closeCurrentSession() {
+        currentSession.close();
     }
 
-    public <T> boolean delete(Object pk) {
-        getLogger().info("delete - invoked " + pk);
-        T object = entityManager.find(getType(), pk);
-        entityManager.remove(object);
-
-        return true;
+    public void closeCurrentSessionwithTransaction() {
+        currentTransaction.commit();
+        currentSession.close();
     }
 
-    public <T> List<T> list(final int offset, final int limit) {
-        getLogger().info("list - invoked");
-        final CriteriaQuery<T> criteriaQuery = entityManager.getCriteriaBuilder().createQuery(getType());
-        criteriaQuery.from(getType());
-        final TypedQuery<T> query = entityManager.createQuery(criteriaQuery);
-        query.setFirstResult(offset).setMaxResults(limit);
-        return query.getResultList();
-    }
-
-    public <T> T get(Object pk) {
-        getLogger().info("get - invoked for: " + pk);
-        return entityManager.find(getType(), pk);
-    }
-
-    protected <T> Optional<T> getSingleResult(List<T> resultList) {
-        getLogger().info("getSingleResult invoked...");
-        return resultList.isEmpty() ? Optional.empty() : Optional.of(resultList.get(0));
-    }
-
-    protected void fillQueryParameters(final Query query, final Map<String, Object> filters) {
-        for (final Map.Entry<String, Object> filter : filters.entrySet()) {
-            query.setParameter(filter.getKey(), filter.getValue());
-        }
-    }
-
-    protected <T> T getSingleResult(final TypedQuery<T> query) {
+    private SessionFactory getSessionFactory() {
         try {
-            return query.getSingleResult();
-        } catch (final NoResultException e) {
-            return null;
+            // Create the SessionFactory from hibernate.cfg.xml
+            Configuration configuration = new Configuration().configure();
+            return configuration.buildSessionFactory();
+        } catch (Throwable ex) {
+            // Make sure you log the exception, as it might be swallowed
+            System.err.println("Initial SessionFactory creation failed." + ex);
+            throw new ExceptionInInitializerError(ex);
         }
     }
 
-//    public Optional<Proposal> getProposalByProposalContractId(String contractNo) {
-//        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-//        CriteriaQuery<Proposal> query = cb.createQuery(Proposal.class);
-//        Root<Proposal> root = query.from(Proposal.class);
-//        query.where(cb.equal(root.get(Proposal_.contractNo), contractNo));
-//        query.select(root);
-//        return checkForSingleResult(entityManager.createQuery(query).getResultList());
-//    }
-//
-//    public List<Proposal> getProposalsByBorrowerId(long customerId) {
-//        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-//        CriteriaQuery<Proposal> query = cb.createQuery(Proposal.class);
-//        Root<Proposal> root = query.from(Proposal.class);
-//        Join<Proposal, Product> product = root.join(Proposal_.product);
-//        Join<Product, Customer> borrower = product.join(Product_.borrower);
-//        query.where(cb.equal(borrower.get(Customer_.id), customerId));
-//        query.distinct(true);
-//        return entityManager.createQuery(query).getResultList();
-//    }
-//
-//    public List<Proposal> getProposalBySellerIdAndStage(long sellerId, List<ProposalStage> proposalStage) {
-//        return entityManager.createQuery("SELECT p FROM Proposal p " +
-//                "WHERE p.subject.subjectSeller.id = :sellerId " +
-//                "AND p.deletionDate IS NULL " +
-//                "AND p.proposalStage IN :proposalStage", Proposal.class)
-//                .setParameter("sellerId", sellerId)
-//                .setParameter("proposalStage", proposalStage)
-//                .getResultList();
-//    }
+    public Session getCurrentSession() {
+        return currentSession;
+    }
 
-    protected abstract Logger getLogger();
+    public void setCurrentSession(Session currentSession) {
+        this.currentSession = currentSession;
+    }
 
-    protected abstract <T> Class<T> getType();
+    public Transaction getCurrentTransaction() {
+        return currentTransaction;
+    }
+
+    public void setCurrentTransaction(Transaction currentTransaction) {
+        this.currentTransaction = currentTransaction;
+    }
+
+    public <T> void save(T entity) {
+        getCurrentSession().save(entity);
+    }
+
+    public <T> void update(T entity) {
+        getCurrentSession().update(entity);
+    }
+
+    public <T> void delete(T entity) {
+        getCurrentSession().delete(entity);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> List<T> findAll() {
+        return (List<T>) getCurrentSession().createQuery("from " + this.getClassType()).list();
+    }
+
+    public <T> T findById(Integer id) {
+        return (T) getCurrentSession().get(getClassType(), id);
+    }
+
+    public <T> List<T> findBy(String key, String value) {
+        return (List<T>) getCurrentSession().createQuery("from " + this.getClassType() + " where " + key + " like " + value).list();
+    }
+
+    public <T> void deleteAll() {
+        List<T> entityList = findAll();
+        for (T entity : entityList) {
+            delete(entity);
+        }
+    }
+
+    public abstract Class getClassType();
+
 }
-

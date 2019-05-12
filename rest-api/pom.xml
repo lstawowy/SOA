@@ -61,12 +61,6 @@
          <scope>provided</scope>
       </dependency>
 
-      <dependency>
-          <groupId>com.soa.soap</groupId>
-          <artifactId>soapapp-model</artifactId>
-          <version>${project.version}</version>
-      </dependency>
-
        <dependency>
            <groupId>javax.validation</groupId>
            <artifactId>validation-api</artifactId>
@@ -77,6 +71,12 @@
        <dependency>
            <groupId>com.soa.soap</groupId>
            <artifactId>soapapp-dao</artifactId>
+           <version>${project.version}</version>
+       </dependency>
+
+       <dependency>
+           <groupId>com.soa.soap</groupId>
+           <artifactId>soapapp-model</artifactId>
            <version>${project.version}</version>
        </dependency>
 

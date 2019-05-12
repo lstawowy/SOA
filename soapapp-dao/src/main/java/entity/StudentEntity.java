@@ -1,6 +1,6 @@
 package entity;
 
-import enums.Gender;
+import com.soa.soap.enums.Gender;
 
 import javax.persistence.*;
 
